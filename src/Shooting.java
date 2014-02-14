@@ -8,16 +8,18 @@ import java.awt.event.*;
 
 public class Shooting extends JApplet{
 	
-	static final int ANGLE_MAX = 70, FORCE_MAX = 50;
-	static final int ANGLE_MIN = 5, FORCE_MIN = 10;
-	static final int ANGLE_INIT = 60, FORCE_INIT = 25;
+	private static final int ANGLE_MAX = 70, FORCE_MAX = 50;
+	private static final int ANGLE_MIN = 5, FORCE_MIN = 10;
+	private static final int ANGLE_INIT = 60, FORCE_INIT = 25;
 	
-	JButton quitbtn, shoot, new_game;
-	JSlider angleSlider, forceSlider;
-	JLabel angleLabel, forceLabel;
-	JPanel anglePanel, forcePanel;
-	GamePanel game;
+	private JButton quitbtn, shoot, new_game;
+	private JSlider angleSlider, forceSlider;
+	private JLabel angleLabel, forceLabel;
+	private JPanel anglePanel, forcePanel;
+	private GamePanel game;
+	BallShooter ballShooter;
 	
+
 	public void init(){
 		try{
 			SwingUtilities.invokeAndWait(new Runnable(){
@@ -34,6 +36,7 @@ public class Shooting extends JApplet{
 		setLayout(null);
 		setSize(770, 500);
 		
+		
 		setUpButtons();
 		setUpAngleSlider();
 		setUpForceSlider();		
@@ -42,7 +45,9 @@ public class Shooting extends JApplet{
 	
 	private void setUpGame(){
 		//game Panel
-		game = new GamePanel(250, 100, 500, 350);
+		ballShooter = new BallShooter();
+		game = new GamePanel(250, 100, 500, 350, ballShooter);
+		ballShooter.setPaintingComponent(game);
 		add(game);
 	}
 	
@@ -97,12 +102,19 @@ public class Shooting extends JApplet{
 			}
 		});
 		quitbtn.setBounds(20, 20, 90, 50);
-		quitbtn.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));;
+		quitbtn.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
 		
 		//Shoot button
 		shoot = new JButton("Shoot!");
 		shoot.setBounds(130, 20, 90, 50);
-		shoot.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));;
+		shoot.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
+		shoot.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				ballShooter.setAngle(Math.toRadians(angleSlider.getValue()));
+				ballShooter.setPower(forceSlider.getValue());
+				ballShooter.shoot();
+			}
+		});
 
 		//New Game button
 		new_game = new JButton("New Game");
@@ -112,7 +124,5 @@ public class Shooting extends JApplet{
 		add(quitbtn);
 		add(shoot);
 		add(new_game);
-		
 	}
-	
 }
