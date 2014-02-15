@@ -5,6 +5,8 @@ import javax.swing.event.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 public class Shooting extends JApplet{
 	
@@ -14,7 +16,7 @@ public class Shooting extends JApplet{
 	
 	private JButton quitbtn, shoot, new_game;
 	private JSlider angleSlider, forceSlider;
-	private JLabel angleLabel, forceLabel;
+	private JLabel angleLabel, forceLabel, scoreLabel;
 	private JPanel anglePanel, forcePanel;
 	private GamePanel game;
 	BallShooter ballShooter;
@@ -39,7 +41,8 @@ public class Shooting extends JApplet{
 		setUpButtons();
 		setUpAngleSlider();
 		setUpForceSlider();		
-		setUpGame();		
+		setUpGame();	
+		setUpScore();
 	}
 	
 	private void setUpGame(){
@@ -47,6 +50,11 @@ public class Shooting extends JApplet{
 		ballShooter = new BallShooter();
 		game = new GamePanel(250, 100, 500, 350, ballShooter);
 		ballShooter.setPaintingComponent(game);
+		game.addPropertyChangeListener(new PropertyChangeListener(){
+			public void propertyChange(PropertyChangeEvent e){
+				scoreLabel.setText(String.format("%02d", e.getNewValue()));
+			}
+		});
 		add(game);
 	}
 	
@@ -130,4 +138,13 @@ public class Shooting extends JApplet{
 		add(new_game);
 	}
 
+	private void setUpScore(){
+		scoreLabel = new JLabel(String.format("%02d", game.getHits()));
+		scoreLabel.setFont(new Font("Monospaced", Font.BOLD, 32));
+		JLabel hitsLabel = new JLabel("HITS");
+		hitsLabel.setBounds(290, 20, 90, 50);
+		scoreLabel.setBounds(240, 20, 50, 50);
+		add(scoreLabel);
+		add(hitsLabel);
+	}
 }

@@ -6,6 +6,10 @@ import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
+import java.awt.geom.Point2D.Double;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 public class GamePanel extends JPanel{
 	static final int CANON_RADIUS = 70;
@@ -14,6 +18,22 @@ public class GamePanel extends JPanel{
 	public static int currentangle = 60, force_value = 25;
 	public final BallShooter ballShooter;
 	public Target target;
+	public Rectangle targetRect;
+	public Ellipse2D.Double ballCircle;
+	private int hits = 0;
+	private final PropertyChangeSupport support = new PropertyChangeSupport(this);
+	
+	public void addPropertyChangeListener(PropertyChangeListener l){
+		support.addPropertyChangeListener(l);
+	}
+	
+	public void removePropertyChangeListener(PropertyChangeListener l){
+		support.removePropertyChangeListener(l);
+	}
+	
+	public int getHits(){
+		return hits;
+	}
 	
 	GamePanel(int x, int y, int width, int height, BallShooter ballShooter){
 		this.setBounds(x, y, width, height);
@@ -40,20 +60,29 @@ public class GamePanel extends JPanel{
 	    	int x = (int)position.getX();
 	    	int y = this.getHeight() - (int)position.getY();
 	    	g.fillOval(x-1, y-10, 10, 10);
+	    	ballCircle = new Ellipse2D.Double(x-1, y-10, 10, 10);
+	    	g2d.fill(ballCircle);
 	    }
     	if(target != null){
-    		setUpTarget(g);
+    		Point2D targetPos = target.getPosition();
+    		int x = (int)targetPos.getX();
+    		int y = (int)targetPos.getY();
+    		g2d.setColor(Color.RED);
+    		targetRect = new Rectangle(x, this.getHeight()-10-y, 20, 10);
+    		g2d.fill(targetRect);
     	}
+    	if(ballCircle != null && targetRect != null){
+    		if(ballCircle.intersects(targetRect)){
+    			target = new Target();
+    			support.firePropertyChange("hits", hits, ++hits);
+    		}
+    	}
+    	g2d.setColor(Color.YELLOW);
+    	Rectangle wall = new Rectangle(145, this.getHeight()-140, 15, 140);
+    	g2d.fill(wall);
+
 	}	
 	
-	public void setUpTarget(Graphics g){
-		Point2D targetPos = target.getPosition();
-		int x = (int)targetPos.getX();
-		int y = (int)targetPos.getY();
-    	g.setColor(Color.RED);
-		g.fillRect(x, this.getHeight()-y-1, 20, 10);
-	}
-
 	@Override
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);

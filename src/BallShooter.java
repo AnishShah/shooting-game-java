@@ -31,6 +31,9 @@ public class BallShooter {
 		 t.setDaemon(true);
 		 t.start();
 	 }
+	 public void stop(){
+
+	 }	 
 	 
 	 private void executeShot(){
 		 if(ball != null){
@@ -57,7 +60,6 @@ public class BallShooter {
 	        	 return;
 	         }
 	     }
-	     
 	     ball = null;
 	     paintingComponent.repaint();
 	 }
