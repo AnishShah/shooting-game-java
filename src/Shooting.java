@@ -19,7 +19,6 @@ public class Shooting extends JApplet{
 	private GamePanel game;
 	BallShooter ballShooter;
 	
-
 	public void init(){
 		try{
 			SwingUtilities.invokeAndWait(new Runnable(){
@@ -120,9 +119,15 @@ public class Shooting extends JApplet{
 		new_game = new JButton("New Game");
 		new_game.setBounds(getWidth()-150, 20, 130, 50);
 		new_game.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
+		new_game.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				
+			}
+		});
 		
 		add(quitbtn);
 		add(shoot);
 		add(new_game);
 	}
+
 }

@@ -13,11 +13,13 @@ public class GamePanel extends JPanel{
 	static final int CANON_HEIGHT = 8;
 	public static int currentangle = 60, force_value = 25;
 	public final BallShooter ballShooter;
+	public Target target;
 	
 	GamePanel(int x, int y, int width, int height, BallShooter ballShooter){
 		this.setBounds(x, y, width, height);
 		this.setBackground(Color.WHITE);	
 		this.ballShooter = ballShooter;
+		this.target = new Target();
 	}
 	
 	private void doDrawing(Graphics g){
@@ -39,7 +41,18 @@ public class GamePanel extends JPanel{
 	    	int y = this.getHeight() - (int)position.getY();
 	    	g.fillOval(x-1, y-10, 10, 10);
 	    }
-	}		
+    	if(target != null){
+    		setUpTarget(g);
+    	}
+	}	
+	
+	public void setUpTarget(Graphics g){
+		Point2D targetPos = target.getPosition();
+		int x = (int)targetPos.getX();
+		int y = (int)targetPos.getY();
+    	g.setColor(Color.RED);
+		g.fillRect(x, this.getHeight()-y-1, 20, 10);
+	}
 
 	@Override
 	public void paintComponent(Graphics g){

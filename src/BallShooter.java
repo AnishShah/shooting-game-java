@@ -81,14 +81,13 @@ class Ball{
 	 }
 	 
 	 public void setVelocity(Point2D point){
-		 velocity.setLocation(point);
+	 	 velocity.setLocation(point);
 	 }
 	 
 	 private static void scaleAddAssign(Point2D result, double factor, Point2D addend){
-		 double x = result.getX() + factor * addend.getX();
-		 double y = result.getY() + factor * addend.getY();
-		 
-		 result.setLocation(x, y);
+	 	 double x = result.getX() + factor * addend.getX();
+	 	 double y = result.getY() + factor * addend.getY();		 
+	 	 result.setLocation(x, y);
 	 }
 	 
 	 void performTimeStep(double dt){
