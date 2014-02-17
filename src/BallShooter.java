@@ -1,33 +1,44 @@
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 import javax.swing.JComponent;
 
 public class BallShooter {
-	 private Ball ball;
-	 private JComponent paintingComponent;
-	 private double angleRad = Math.toRadians(60);
-	 private double power = 25;
+	private Ball ball;
+	private JComponent paintingComponent;
+	private double angleRad = Math.toRadians(60);
+	private double power = 25;
+	private final PropertyChangeSupport support = new PropertyChangeSupport(this);
 	 
-	 void setPaintingComponent(JComponent paintingComponent){
-		 this.paintingComponent = paintingComponent;
-	 }
+	public void addPropertyChangeListener(PropertyChangeListener l){
+		 support.addPropertyChangeListener(l);
+	}
+		
+	public void removePropertyChangeListener(PropertyChangeListener l){
+		 support.removePropertyChangeListener(l);
+	}
 	 
-	 void setAngle(double angleRad){
-		 this.angleRad = angleRad;
-	 }
+	void setPaintingComponent(JComponent paintingComponent){
+		this.paintingComponent = paintingComponent;
+	}
 	 
-	 void setPower(double power){
-		 this.power = power;
-	 }
+	void setAngle(double angleRad){
+		this.angleRad = angleRad;
+	}
 	 
-	 void shoot(){
-		 Thread t = new Thread(new Runnable(){
-			 @Override
-			 public void run(){
-				 executeShot();
-			 }
-		 });
+	void setPower(double power){
+		this.power = power;
+	}
+	 
+	void shoot(){
+		Thread t = new Thread(new Runnable(){
+		 @Override
+		 public void run(){
+			 executeShot();
+		 }
+	});
 		 t.setDaemon(true);
 		 t.start();
 	 }
@@ -62,6 +73,7 @@ public class BallShooter {
 	     }
 	     ball = null;
 	     paintingComponent.repaint();
+	     support.firePropertyChange("hitsTarget", 0, 1);
 	 }
 	 
 	 Ball getBall(){

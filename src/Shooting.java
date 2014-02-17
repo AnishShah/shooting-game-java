@@ -13,10 +13,11 @@ public class Shooting extends JApplet{
 	private static final int ANGLE_MAX = 70, FORCE_MAX = 50;
 	private static final int ANGLE_MIN = 5, FORCE_MIN = 10;
 	private static final int ANGLE_INIT = 60, FORCE_INIT = 25;
-	
+	private static int shots = 15;
+	public boolean hitTarget = false;
 	private JButton quitbtn, shoot, new_game;
 	private JSlider angleSlider, forceSlider;
-	private JLabel angleLabel, forceLabel, scoreLabel;
+	private JLabel angleLabel, forceLabel, scoreLabel, shotLabel;
 	private JPanel anglePanel, forcePanel;
 	private GamePanel game;
 	BallShooter ballShooter;
@@ -38,11 +39,12 @@ public class Shooting extends JApplet{
 		setSize(770, 500);
 		
 		
-		setUpButtons();
 		setUpAngleSlider();
 		setUpForceSlider();		
 		setUpGame();	
 		setUpScore();
+		setUpShots();
+		setUpButtons();
 	}
 	
 	private void setUpGame(){
@@ -53,9 +55,24 @@ public class Shooting extends JApplet{
 		game.addPropertyChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent e){
 				scoreLabel.setText(String.format("%02d", e.getNewValue()));
+				hitTarget = true;
 			}
 		});
 		add(game);
+		ballShooter.addPropertyChangeListener(new PropertyChangeListener(){
+			public void propertyChange(PropertyChangeEvent e){
+				shoot.setEnabled(true);
+				if(!hitTarget){
+					shots--;
+					shotLabel.setText(String.format("%02d", shots));
+					if(shots == 0){
+						JOptionPane.showMessageDialog(null, "Game Over! Click on New Game!");
+						shoot.setEnabled(false);
+					}
+				}
+				hitTarget = false;
+			}
+		});
 	}
 	
 	private void setUpForceSlider(){
@@ -117,9 +134,14 @@ public class Shooting extends JApplet{
 		shoot.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
 		shoot.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				ballShooter.setAngle(Math.toRadians(angleSlider.getValue()));
-				ballShooter.setPower(forceSlider.getValue());
-				ballShooter.shoot();
+				shoot.setEnabled(false);
+				if(shots != 0){
+					ballShooter.setAngle(Math.toRadians(angleSlider.getValue()));
+					ballShooter.setPower(forceSlider.getValue());
+					ballShooter.shoot();
+				}else{
+					JOptionPane.showMessageDialog(null, "Game Over! Click on New Game.");
+				}
 			}
 		});
 
@@ -129,7 +151,13 @@ public class Shooting extends JApplet{
 		new_game.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
 		new_game.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				
+				shoot.setEnabled(true);
+				game.resetGame();
+				shots = 15;
+				shotLabel.setText(String.format("%02d", shots));
+				scoreLabel.setText(String.format("%02d", game.getHits()));
+				angleSlider.setValue(ANGLE_INIT);
+				forceSlider.setValue(FORCE_INIT);
 			}
 		});
 		
@@ -146,5 +174,15 @@ public class Shooting extends JApplet{
 		scoreLabel.setBounds(240, 20, 50, 50);
 		add(scoreLabel);
 		add(hitsLabel);
+	}
+
+	private void setUpShots(){
+		shotLabel = new JLabel(String.format("%02d", shots));
+		shotLabel.setFont(new Font("Monospaced", Font.BOLD, 32));
+		JLabel shotsLeftLabel = new JLabel("Shots Left");
+		shotLabel.setBounds(400, 20, 50, 50);
+		shotsLeftLabel.setBounds(450, 20, 90, 50);
+		add(shotLabel);
+		add(shotsLeftLabel);
 	}
 }

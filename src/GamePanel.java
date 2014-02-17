@@ -31,8 +31,18 @@ public class GamePanel extends JPanel{
 		support.removePropertyChangeListener(l);
 	}
 	
+	private void setHits(int hits){
+		this.hits = hits;
+	}
+	
 	public int getHits(){
 		return hits;
+	}
+	
+	public void resetGame(){
+		setHits(0);
+		target = new Target();
+		this.repaint();
 	}
 	
 	GamePanel(int x, int y, int width, int height, BallShooter ballShooter){
