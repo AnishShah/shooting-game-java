@@ -58,6 +58,7 @@ public class Shooting extends JApplet{
 				hitTarget = true;
 			}
 		});
+		game.setBorder(BorderFactory.createLineBorder(Color.black));
 		add(game);
 		ballShooter.addPropertyChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent e){
