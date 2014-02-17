@@ -78,9 +78,13 @@ public class GamePanel extends JPanel{
     		}
     	}
     	g2d.setColor(Color.YELLOW);
-    	Rectangle wall = new Rectangle(145, this.getHeight()-140, 15, 140);
+    	Rectangle wall = new Rectangle(145, this.getHeight()-1-140, 20, 140);
     	g2d.fill(wall);
-
+    	if(ballCircle != null){
+	    	if(ballCircle.intersects(wall)){
+	    		ball.setVelocity(new Point2D.Double(-ball.getVelocity().getX(), ball.getVelocity().getY()));
+	    	}
+    	}
 	}	
 	
 	@Override

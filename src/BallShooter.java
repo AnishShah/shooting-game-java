@@ -78,6 +78,10 @@ class Ball{
 		 return new Point2D.Double(position.getX(), position.getY());
 	 }
 	 
+	 public Point2D getVelocity(){
+		 return new Point2D.Double(velocity.getX(), velocity.getY());
+	 }
+	 
 	 public void setPosition(Point2D point){
 		 position.setLocation(point);
 	 }
